@@ -69,6 +69,7 @@
   <!-- daterangepicker -->
   <script src="<?php echo base_url('assets/bower_components/moment/min/moment.min.js') ?>"></script>
   <script src="<?php echo base_url('assets/bower_components/bootstrap-daterangepicker/daterangepicker.js') ?>"></script>
+  <script src="<?php echo base_url('assets/bower_components/bootstrap-timepicker/js/bootstrap-timepicker.js') ?>"></script>
   <!-- datepicker -->
   <script src="<?php echo base_url('assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') ?>"></script>
   <!-- Bootstrap WYSIHTML5 -->

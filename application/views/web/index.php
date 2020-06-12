@@ -50,6 +50,7 @@
             <div class="inner text-center">
               <h1 class="logo-name">Restaurant-Kit</h1>
               <h2>Food To fit your lifestyle & health.</h2>
+              <h3><?php echo date('h:i A', strtotime($restaurant['daily_open_at'])); ?> ~ <?php echo date('h:i A', strtotime($restaurant['daily_close_at'])); ?></h3>
               <p>Specialized in Indian Cuisine!!</p>
             </div>
           </div>
@@ -130,74 +131,88 @@
           function datetostring($date) {
             return date('j', strtotime($date)).'<sup>'.date('S', strtotime($date)).'</sup> '.date('F', strtotime($date)).' '.date('Y', strtotime($date));
           }
-          if($close_at != '' && (date('Y-m-d') >= $close_at) && date('Y-m-d') <= $open_at) {?>
-          <div class="banner">
-            <div class="banner-wrapper">
-              <div class="banner-center">
-                <?php if($close_at == $open_at) {?>
-                <p class="headline">Please be informed our Restaurant is <span class="colored">closed on <?php echo datetostring($open_at); ?></span> from <span class="colored">7:00 AM until 12:00 PM</span></p>
-                <?php } else {?>
-                  <p class="headline">Please be informed our Restaurant is <span class="colored">closed</span> from <span class="colored"><?php echo datetostring($close_at); ?></span> to <span class="colored"><?php echo datetostring($open_at); ?></span></p>
-                <?php } ?>
+          if (strtotime(date('H:i:s')) < strtotime($restaurant['daily_open_at']) 
+            || strtotime(date('H:i:s')) > strtotime($restaurant['daily_close_at'])) { ?>
+            <div class="banner">
+              <div class="banner-wrapper">
+                <div class="banner-center">
+                  <p class="headline">Please be informed our Restaurant is <span class="colored">closed.</span></p>
+                  <p class="headline">Will be open at <span class="colored"><?php echo date('h:i A', strtotime($restaurant['daily_open_at'])); ?></span></p>
+                </div>
               </div>
             </div>
-          </div>
-          <?php }else {?>
+          <?php }else {
+            if($close_at != '' && $open_at != '' && date('Y-m-d') >= $close_at
+            && date('Y-m-d') <= $open_at) {?>
+            <div class="banner">
+              <div class="banner-wrapper">
+                <div class="banner-center">
+                  <?php if($close_at == $open_at) {?>
+                  <p class="headline">Please be informed our Restaurant is <span class="colored">closed on <?php echo datetostring($open_at); ?></span> from <span class="colored"><?php echo date('h:i A', strtotime($restaurant['daily_open_at'])); ?> until <?php echo date('h:i A', strtotime($restaurant['daily_close_at'])); ?></span></p>
+                  <?php } else {?>
+                    <p class="headline">Please be informed our Restaurant is <span class="colored">closed</span> from <span class="colored"><?php echo datetostring($close_at); ?></span> to <span class="colored"><?php echo datetostring($open_at); ?></span></p>
+                  <?php } ?>
+                </div>
+              </div>
+            </div>
+              <?php } else {?>
             <form action="" method="post" role="form" class="contactForm">
-            <div id="sendmessage">Your booking request has been sent. Thank you!</div>
-            <div id="errormessage"></div>
-            <div class="col-md-6 col-sm-6 contact-form pad-form">
-              <div class="form-group label-floating is-empty">
-                <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
-                <div class="validation"></div>
-              </div>
+              <div id="sendmessage">Your booking request has been sent. Thank you!</div>
+              <div id="errormessage"></div>
+              <div class="col-md-6 col-sm-6 contact-form pad-form">
+                <div class="form-group label-floating is-empty">
+                  <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" data-rule="minlen:4" data-msg="Please enter at least 4 chars" />
+                  <div class="validation"></div>
+                </div>
 
-            </div>
-            <div class="col-md-6 col-sm-6 contact-form">
-              <div class="form-group">
-                <input type="date" class="form-control label-floating is-empty" name="date" id="date" placeholder="Date" data-rule="required" data-msg="This field is required" />
-                <div class="validation"></div>
               </div>
-            </div>
-            <div class="col-md-6 col-sm-6 contact-form pad-form">
-              <div class="form-group">
-                <input type="email" class="form-control label-floating is-empty" name="email" id="email" placeholder="Your Email" data-rule="email" data-msg="Please enter a valid email" />
-                <div class="validation"></div>
+              <div class="col-md-6 col-sm-6 contact-form">
+                <div class="form-group">
+                  <input type="date" class="form-control label-floating is-empty" name="date" id="date" placeholder="Date" data-rule="required" data-msg="This field is required" />
+                  <div class="validation"></div>
+                </div>
               </div>
-            </div>
-            <div class="col-md-6 col-sm-6 contact-form">
-              <div class="form-group">
-                <input type="time" class="form-control label-floating is-empty" name="time" id="time" placeholder="Time" data-rule="required" data-msg="This field is required" />
-                <div class="validation"></div>
+              <div class="col-md-6 col-sm-6 contact-form pad-form">
+                <div class="form-group">
+                  <input type="email" class="form-control label-floating is-empty" name="email" id="email" placeholder="Your Email" data-rule="email" data-msg="Please enter a valid email" />
+                  <div class="validation"></div>
+                </div>
               </div>
-            </div>
-            <div class="col-md-6 col-sm-6 contact-form">
-              <div class="form-group">
-                <input type="text" class="form-control label-floating is-empty" name="phone" id="phone" placeholder="Phone" data-rule="required" data-msg="This field is required" />
-                <div class="validation"></div>
+              <div class="col-md-6 col-sm-6 contact-form">
+                <div class="form-group">
+                  <input type="time" class="form-control label-floating is-empty" name="time" id="time" placeholder="Time" data-rule="required" data-msg="This field is required" />
+                  <div class="validation"></div>
+                </div>
               </div>
-            </div>
-            <div class="col-md-6 col-sm-6 contact-form">
-              <div class="form-group">
-                <input type="text" class="form-control label-floating is-empty" name="people" id="people" placeholder="Number Of People" data-rule="required" data-msg="This field is required" />
-                <div class="validation"></div>
+              <div class="col-md-6 col-sm-6 contact-form">
+                <div class="form-group">
+                  <input type="text" class="form-control label-floating is-empty" name="phone" id="phone" placeholder="Phone" data-rule="required" data-msg="This field is required" />
+                  <div class="validation"></div>
+                </div>
               </div>
-            </div>
-            <div class="col-md-12 contact-form">
-              <div class="form-group label-floating is-empty">
-                <textarea class="form-control" name="message" rows="5" rows="3" data-rule="required" data-msg="Please write something for us" placeholder="Message"></textarea>
-                <div class="validation"></div>
+              <div class="col-md-6 col-sm-6 contact-form">
+                <div class="form-group">
+                  <input type="text" class="form-control label-floating is-empty" name="people" id="people" placeholder="Number Of People" data-rule="required" data-msg="This field is required" />
+                  <div class="validation"></div>
+                </div>
               </div>
+              <div class="col-md-12 contact-form">
+                <div class="form-group label-floating is-empty">
+                  <textarea class="form-control" name="message" rows="5" rows="3" data-rule="required" data-msg="Please write something for us" placeholder="Message"></textarea>
+                  <div class="validation"></div>
+                </div>
 
-            </div>
-            <div class="col-md-12 btnpad">
-              <div class="contacts-btn-pad">
-                <button type="submit" class="contacts-btn">Book Table</button>
-                <span id="msg" class="message hide"></span>
               </div>
-            </div>
+              <div class="col-md-12 btnpad">
+                <div class="contacts-btn-pad">
+                  <button type="submit" class="contacts-btn">Book Table</button>
+                  <span id="msg" class="message hide"></span>
+                </div>
+              </div>
           </form>
-          <?php } ?>
+          <?php } 
+          }
+          ?>
         </div>
       </div>
     </div>

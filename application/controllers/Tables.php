@@ -228,11 +228,12 @@ class Tables extends Admin_Controller
 	        	$data = array(
         			'available' => 2,	
 				);
-				
+				$booking_start = $this->input->post('booking_start');
+				$booking_end = $this->input->post('booking_end');
 				$bookingData = array(
 					'table_id' => $id,
-					'booking_start' => $this->input->post('booking_start'),
-					'booking_end' => $this->input->post('booking_end'),
+					'booking_start' => $booking_start,
+					'booking_end' => $booking_end,
 					'booking_status' => 1,
 					'booking_doc' => date("Y-m-d H:i:s"),
 				);
@@ -240,9 +241,23 @@ class Tables extends Admin_Controller
 				$update = $this->model_tables->update($id, $data);
 				$this->db->set("request_checked", 1)->set("request_confirmed_at", date("Y-m-d H:i:s"))->update("booking_requests");
 				$result = $this->model_tables->booking($bookingData);
-	        	if($update == true) {
-	        		$response['success'] = true;
-	        		$response['messages'] = 'Succesfully updated';
+	        	if($update && $result) {
+					$response['success'] = true;
+					$response['messages'] = 'Succesfully updated'; 
+					
+					// $from = 'niharranjandasmu@gmail.com';
+					// $to = $this->input->post('request_email');
+
+					// $this->load->library('email');
+					// $this->email->from($from, 'Nihar Ranjan Das');
+					// $this->email->to($to);
+					// $this->email->subject('Table Booking Confirmation');
+					// $this->email->message('Your table booking request is accepted from '.date('h:i A', strtotime($booking_start)) .' to ' . date('h:i A', strtotime($booking_end)));
+					// if ($this->email->send()) {
+						
+					// } else {
+						
+					// }
 	        	}
 	        	else {
 	        		$response['success'] = false;

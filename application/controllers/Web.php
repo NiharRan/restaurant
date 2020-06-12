@@ -38,20 +38,29 @@ class Web extends Admin_Controller
         $this->form_validation->set_rules($rules);
         $this->form_validation->set_error_delimiters('<span class="text-danger">', '</span>');
         if ($this->form_validation->run() == TRUE) {
-            $jsonData['check'] = true;
-            $data = array(
-                'name' => $this->input->post('name'),
-                'date' => date("Y-m-d", strtotime($this->input->post('date'))),
-                'time' => date("H:i:s", strtotime($this->input->post('time'))),
-                'email' => $this->input->post('email'),
-                'phone' => $this->input->post('phone'),
-                'people' => $this->input->post('people'),
-                'message' => $this->input->post('message')
-            );
+            $date = $this->input->post('date');
+            $time = $this->input->post('time');
+            $dateMessage = $this->isValidDateOfOrder($date);
+            $timeMessage = $this->isValidTimeOfOrder($time);
+            if ($dateMessage == '' && $timeMessage == '') {
+                $jsonData['check'] = true;
+                $data = array(
+                    'name' => $this->input->post('name'),
+                    'date' => date("Y-m-d", strtotime($date)),
+                    'time' => date("H:i:s", strtotime($time)),
+                    'email' => $this->input->post('email'),
+                    'phone' => $this->input->post('phone'),
+                    'people' => $this->input->post('people'),
+                    'message' => $this->input->post('message')
+                );
 
-            $result = $this->model_web->store_booking_request_info($data);
-            if ($result) {
-                $jsonData['success'] = true;
+                $result = $this->model_web->store_booking_request_info($data);
+                if ($result) {
+                    $jsonData['success'] = true;
+                }
+            }else {
+                $jsonData['errors']['date'] = $dateMessage;
+                $jsonData['errors']['time'] = $timeMessage;
             }
         }else {
             foreach ($_POST as $key => $value) {
@@ -60,5 +69,26 @@ class Web extends Admin_Controller
         }
 
         echo json_encode($jsonData);
+    }
+
+
+    public function isValidDateOfOrder($date)
+    {
+        if (strtotime($date) < strtotime(date('Y-m-d'))) {
+            return '<span class="text-danger">Invalid date.</span>';
+        }
+        if (date('m', strtotime($date)) > date('m')) {
+            return '<span class="text-danger">Order request is available for current month.</span>';
+        }
+        return '';
+    }
+
+    public function isValidTimeOfOrder($time)
+    {
+        $restaurant = $this->model_web->fetchCompanyInfo();
+        if (strtotime($time) < strtotime($restaurant['daily_open_at']) || strtotime($time) > strtotime($restaurant['daily_close_at'])) {
+            return '<span class="text-danger">Restaurant is closed then.</span>';
+        }
+        return '';
     }
 }

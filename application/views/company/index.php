@@ -98,6 +98,20 @@
                         </div>
                       </div>
                 </div>
+                <div class="row">
+                      <div class="col-md-6 col-sm-12">
+                        <div class="form-group">
+                          <label for="phone">Daily Open At</label>
+                            <input id="daily_open_at" name="daily_open_at" placeholder="Enter Daily Opening Date" value="<?php echo $company_data['daily_open_at'] ?>" type="text" class="form-control">
+                        </div>
+                      </div>
+                      <div class="col-md-6 col-sm-12">
+                        <div class="form-group">
+                          <label for="phone">Daily Close At</label>
+                            <input id="daily_close_at" name="daily_close_at" placeholder="Enter Daily Closing Date" value="<?php echo $company_data['daily_close_at'] ?>" type="text" class="form-control">
+                        </div>
+                      </div>
+                </div>
               </div>
               <!-- /.box-body -->
 
@@ -121,6 +135,7 @@
 <script type="text/javascript">
   $(document).ready(function() {
     $('#close_at, #open_at').datepicker();
+    $('#daily_close_at, #daily_open_at').timepicker();
     $("#companyMainNav").addClass('active');
     $("#message").wysihtml5();
   });

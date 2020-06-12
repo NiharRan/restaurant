@@ -174,6 +174,7 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           <input type="hidden" name="request_id" id="request_id">
+          <input type="hidden" name="request_email" id="request_email">
           <button type="submit" class="btn btn-primary">Save changes</button>
         </div>
 
@@ -231,6 +232,7 @@ $(document).ready(function() {
 // edit function
 function editFunc(id)
 { 
+  var email = $('#edit'+id).data('email');
   $.ajax({
     url: base_url + 'tables/fetchAvailableTableData',
     type: 'post',
@@ -238,6 +240,7 @@ function editFunc(id)
     success:function(response) {
 
       $("#request_id").val(id);
+      $('#request_email').val(email);
       $("#table_id").html(response);
 
       $("#table_id").change(function () {

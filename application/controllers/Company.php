@@ -37,6 +37,8 @@ class Company extends Admin_Controller
             // true case
 			$close_at = $this->input->post('close_at');
 			$open_at = $this->input->post('open_at');
+			$daily_open_at = $this->input->post('daily_open_at');
+			$daily_close_at = $this->input->post('daily_close_at');
         	$data = array(
         		'company_name' => $this->input->post('company_name'),
         		'service_charge_value' => $this->input->post('service_charge_value'),
@@ -48,6 +50,8 @@ class Company extends Admin_Controller
 				'currency' => $this->input->post('currency'),
 				'close_at' => $close_at == '' ? '' : date('Y-m-d', strtotime($close_at)),
 				'open_at' => $open_at == '' ? '' : date('Y-m-d', strtotime($open_at)),
+				'daily_open_at' => $daily_open_at == '' ? '' : date('H:i:s', strtotime($daily_open_at)),
+				'daily_close_at' => $daily_close_at == '' ? '' : date('H:i:s', strtotime($daily_close_at)),
         	);
 
         	$update = $this->model_company->update($data, 1);
