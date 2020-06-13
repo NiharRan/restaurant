@@ -225,11 +225,12 @@ class Tables extends Admin_Controller
 			$this->form_validation->set_error_delimiters('<p class="text-danger">','</p>');
 
 	        if ($this->form_validation->run() == TRUE) {
+				$request_id = $this->input->post("request_id");
 	        	$data = array(
         			'available' => 2,	
 				);
-				$booking_start = $this->input->post('booking_start');
-				$booking_end = $this->input->post('booking_end');
+				$booking_start = date('Y-m-d H:i:s', strtotime($this->input->post('booking_start')));
+				$booking_end = date('Y-m-d H:i:s', strtotime($this->input->post('booking_end')));
 				$bookingData = array(
 					'table_id' => $id,
 					'booking_start' => $booking_start,
@@ -239,25 +240,13 @@ class Tables extends Admin_Controller
 				);
 
 				$update = $this->model_tables->update($id, $data);
-				$this->db->set("request_checked", 1)->set("request_confirmed_at", date("Y-m-d H:i:s"))->update("booking_requests");
+				$this->db->set("request_checked", 1)->set("request_confirmed_at", date("Y-m-d H:i:s"))->where('request_id', $request_id)->update("booking_requests");
 				$result = $this->model_tables->booking($bookingData);
 	        	if($update && $result) {
 					$response['success'] = true;
 					$response['messages'] = 'Succesfully updated'; 
 					
-					// $from = 'niharranjandasmu@gmail.com';
-					// $to = $this->input->post('request_email');
-
-					// $this->load->library('email');
-					// $this->email->from($from, 'Nihar Ranjan Das');
-					// $this->email->to($to);
-					// $this->email->subject('Table Booking Confirmation');
-					// $this->email->message('Your table booking request is accepted from '.date('h:i A', strtotime($booking_start)) .' to ' . date('h:i A', strtotime($booking_end)));
-					// if ($this->email->send()) {
-						
-					// } else {
-						
-					// }
+					$this->sendMail();
 	        	}
 	        	else {
 	        		$response['success'] = false;
@@ -279,6 +268,7 @@ class Tables extends Admin_Controller
 			$this->form_validation->set_error_delimiters('<p class="text-danger">','</p>');
 			if ($this->form_validation->run() == TRUE) {
 				$table_ids = $this->input->post("table_id");
+				$request_id = $this->input->post("request_id");
 				foreach ($table_ids as $id) {
 					$data = array(
 						'available' => 2,	
@@ -286,8 +276,8 @@ class Tables extends Admin_Controller
 					
 					$bookingData = array(
 						'table_id' => $id,
-						'booking_start' => $this->input->post('booking_start'),
-						'booking_end' => $this->input->post('booking_end'),
+						'booking_start' => date('Y-m-d H:i:s', strtotime($this->input->post('booking_start'))),
+						'booking_end' => date('Y-m-d H:i:s', strtotime($this->input->post('booking_end'))),
 						'booking_status' => 1,
 						'booking_doc' => date("Y-m-d H:i:s"),
 					);
@@ -297,13 +287,14 @@ class Tables extends Admin_Controller
 					if($update == true) {
 						$response['success'] = true;
 						$response['messages'] = 'Succesfully updated';
+						$this->sendMail();
 					}
 					else {
 						$response['success'] = false;
 						$response['messages'] = 'Error in the database while updated the brand information';			
 					}
 				}
-				$this->db->set("request_checked", 1)->set("request_confirmed_at", date("Y-m-d H:i:s"))->update("booking_requests");
+				$this->db->set("request_checked", 1)->set("request_confirmed_at", date("Y-m-d H:i:s"))->where('request_id', $request_id)->update("booking_requests");
 			} else {
 				# code...
 			}
@@ -315,6 +306,19 @@ class Tables extends Admin_Controller
 		}
 
 		echo json_encode($response);
+	}
+
+
+	function sendMail()
+	{
+		$this->load->library('email');
+		$this->email->set_newline("\r\n");
+		$this->email->from('niharranjandasmu@gmail.com'); // change it to yours
+		$this->email->to($this->input->post('request_email'));// change it to yours
+		$this->email->subject('Table booking confirmation');
+		$this->email->message('<h1>Your table booking request is accepted successfully!</h1>');
+		$this->email->send();
+
 	}
 
 }

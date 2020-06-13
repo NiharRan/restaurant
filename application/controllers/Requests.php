@@ -32,8 +32,8 @@ class Requests extends Admin_Controller
 			// button
 			$buttons = '';
 
-			$buttons = '<button type="button" id="edit'.$value['request_id'].'" class="btn btn-default" data-email="'.$value['email'].'" onclick="editFunc('.$value['request_id'].')" data-toggle="modal" data-target="#bookingModal"><i class="fa fa-pencil"></i></button>';
-			$buttons .= ' <button type="button" class="btn btn-default" onclick="removeFunc('.$value['request_id'].')" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button>';
+			$buttons = '<button type="button" id="edit'.$value['request_id'].'" data-people="'.$value['people'].'" data-date="'.$value['date'].' '.$value['time'].'" class="btn btn-default" data-email="'.$value['email'].'" onclick="editFunc('.$value['request_id'].')" data-toggle="modal" data-target="#bookingModal"><i class="fa fa-pencil"></i></button>';
+			if($value['request_checked'] == 0) $buttons .= ' <button type="button" class="btn btn-default" onclick="removeFunc('.$value['request_id'].')" data-toggle="modal" data-target="#removeModal"><i class="fa fa-trash"></i></button>';
 
 			$status = ($value['request_checked'] == 1) ? '<span class="label label-success">Done</span>' : '<span class="label label-warning">Pending</span>';
 

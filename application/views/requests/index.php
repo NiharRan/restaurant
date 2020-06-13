@@ -70,69 +70,6 @@
   <!-- /.content-wrapper -->
 
 <!-- edit brand modal -->
-<div class="modal fade" tabindex="-1" role="dialog" id="editModal">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Edit Request</h4>
-      </div>
-
-      <form role="form" action="<?php echo base_url('requests/update') ?>" method="post" id="updateForm">
-
-        <div class="modal-body">
-          <div id="messages"></div>
-
-          <div class="form-group">
-            <label for="name">Customer Name</label>
-            <input type="text" class="form-control" id="edit_name" name="edit_name" readonly autocomplete="off">
-          </div>
-
-          <div class="form-group">
-            <label for="phone">Contact Number</label>
-            <input type="text" class="form-control" id="edit_phone" name="edit_phone" readonly placeholder="Enter capacity" autocomplete="off">
-          </div>
-
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="text" class="form-control" id="edit_email" name="edit_email" readonly placeholder="Enter capacity" autocomplete="off">
-          </div>
-
-          <div class="form-group">
-            <label for="date">Date</label>
-            <input type="text" class="form-control" id="edit_date" name="edit_date" readonly placeholder="Enter capacity" autocomplete="off">
-          </div>
-          <div class="form-group">
-            <label for="time">Time</label>
-            <input type="text" class="form-control" id="edit_time" name="edit_time" readonly placeholder="Enter capacity" autocomplete="off">
-          </div>
-          <div class="form-group">
-            <label for="people">People</label>
-            <input type="text" class="form-control" id="edit_people" name="edit_people" readonly placeholder="Enter capacity" autocomplete="off">
-          </div>
-
-          <div class="form-group">
-            <label for="request_checked">Status</label>
-            <select class="form-control" id="edit_request_checked" name="edit_request_checked">
-              <option value="">Select ..</option>
-              <option value="1">Done</option>
-              <option value="2">Pending</option>
-            </select>
-          </div>
-
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save changes</button>
-        </div>
-
-      </form>
-
-
-    </div><!-- /.modal-content -->
-  </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
 
 
 <?php if(in_array('deleteTable', $user_permission)): ?>
@@ -155,14 +92,20 @@
             </select>
           </div>
 
-          <div class="form-group">
-            <label for="brand_name">Total Capacity</label>
-            <input type="text" class="form-control" id="booking_capacity" name="booking_capacity" readonly placeholder="Capacity" autocomplete="off">
+          <div class="form-group row">
+            <div class="col-md-6 col-sm-12">
+              <label for="brand_name">Required Set</label>
+              <input type="text" class="form-control" id="required_capacity" name="required_capacity" readonly placeholder="Capacity" autocomplete="off">
+            </div>
+            <div class="col-md-6 col-sm-12">
+              <label for="brand_name">Total Capacity</label>
+              <input type="text" class="form-control" id="booking_capacity" name="booking_capacity" readonly placeholder="Capacity" autocomplete="off">
+            </div>
           </div>
 
           <div class="form-group">
             <label for="brand_name">From</label>
-            <input type="text" class="form-control" id="booking_start" name="booking_start" placeholder="Start Date" autocomplete="off">
+            <input type="text" readonly class="form-control" id="booking_start" name="booking_start" placeholder="Start Date" autocomplete="off">
           </div>
           <div class="form-group">
             <label for="brand_name">To</label>
@@ -230,9 +173,23 @@ $(document).ready(function() {
 });
 
 // edit function
+function formatDate(date) {
+  var m = new Date(date);
+  var dateString =
+      m.getUTCFullYear() + "/" +
+      ("0" + (m.getUTCMonth()+1)).slice(-2) + "/" +
+      ("0" + m.getUTCDate()).slice(-2) + " " +
+      ("0" + m.getUTCHours()).slice(-2) + ":" +
+      ("0" + m.getUTCMinutes()).slice(-2) + ":" +
+      ("0" + m.getUTCSeconds()).slice(-2);
+    return dateString;
+}
 function editFunc(id)
 { 
   var email = $('#edit'+id).data('email');
+  var date = $('#edit'+id).data('date');
+  var people = $('#edit'+id).data('people');
+  date = formatDate(date);
   $.ajax({
     url: base_url + 'tables/fetchAvailableTableData',
     type: 'post',
@@ -241,7 +198,9 @@ function editFunc(id)
 
       $("#request_id").val(id);
       $('#request_email').val(email);
+      $('#booking_start').val(date);
       $("#table_id").html(response);
+      $("#required_capacity").val(people);
 
       $("#table_id").change(function () {
         var table_id = $(this).val();
