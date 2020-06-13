@@ -131,6 +131,7 @@ class Model_tables extends CI_Model
 
 	public function getRequestData($id = null)
     {
+		$currentDate = date('Y-m-d 00:00:00');
 		if($id) {
 			$sql = "SELECT * FROM booking_requests WHERE request_id = ?";
 			$query = $this->db->query($sql, array($id));
@@ -138,6 +139,7 @@ class Model_tables extends CI_Model
 		}else {
 			return $this->db->select('*')
 						->from('booking_requests')
+						->where("request_date >= '$currentDate'")
 						->get()
 						->result_array();
 		}
